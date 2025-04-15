@@ -37,7 +37,7 @@ func action(cmd *cobra.Command, args []string) error {
 	}
 	request, err := http.NewRequest("POST", vault.URL("/v1/sys/unseal"), bytes.NewBuffer(unsealBytes))
 	if err != nil {
-		panic(err)
+		return err
 	}
 	request.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
