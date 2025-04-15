@@ -5,15 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
-	"os"
-	"path/filepath"
 
+	"github.com/agentio/v/pkg/pretty"
+	"github.com/agentio/v/pkg/vault"
 	"github.com/spf13/cobra"
 )
-
-var verbose bool
 
 func Cmd() *cobra.Command {
 	cmd := &cobra.Command{
@@ -24,40 +21,21 @@ func Cmd() *cobra.Command {
 	return cmd
 }
 
-type VaultKeys struct {
-	Keys       []string `json:"keys"`
-	KeysBase64 []string `json:"keys_base64"`
-	RootToken  string   `json:"root_token"`
-}
-
 type UnsealRequest struct {
 	Key string `json:"key"`
 }
 
 func action(cmd *cobra.Command, args []string) error {
-	home, err := os.UserHomeDir()
+	k, err := vault.ReadKeys()
 	if err != nil {
 		return err
 	}
-	configfilename := filepath.Join(home, ".config", "vault", "keys.json")
-	b, err := os.ReadFile(configfilename)
-	if err != nil {
-		return err
-	}
-	var keys VaultKeys
-	err = json.Unmarshal(b, &keys)
-	if err != nil {
-		return err
-	}
-	unseal := UnsealRequest{Key: keys.Keys[0]}
+	unseal := UnsealRequest{Key: k.Keys[0]}
 	unsealBytes, err := json.Marshal(unseal)
 	if err != nil {
 		return err
 	}
-
-	addr := os.Getenv("VAULT_ADDR")
-	url := addr + "/v1/sys/unseal"
-	request, err := http.NewRequest("POST", url, bytes.NewBuffer(unsealBytes))
+	request, err := http.NewRequest("POST", vault.URL("/v1/sys/unseal"), bytes.NewBuffer(unsealBytes))
 	if err != nil {
 		panic(err)
 	}
@@ -67,12 +45,10 @@ func action(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	log.Printf("%+v", response)
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		return err
 	}
-	log.Printf("%s", string(body))
-	fmt.Printf("Everything looks good!\n")
+	fmt.Printf("%s\n", pretty.JSON(body))
 	return nil
 }

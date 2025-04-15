@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"github.com/agentio/v/cmd/read"
 	"github.com/agentio/v/cmd/unseal"
+	"github.com/agentio/v/cmd/write"
 	"github.com/spf13/cobra"
 )
 
@@ -10,6 +12,8 @@ func Cmd() *cobra.Command {
 		Use:   "v",
 		Short: "Vault Tools",
 	}
+	cmd.AddCommand(read.Cmd())
 	cmd.AddCommand(unseal.Cmd())
+	cmd.AddCommand(write.Cmd())
 	return cmd
 }
