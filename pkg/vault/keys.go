@@ -10,6 +10,7 @@ type VaultKeys struct {
 	Keys       []string `json:"keys"`
 	KeysBase64 []string `json:"keys_base64"`
 	RootToken  string   `json:"root_token"`
+	Cluster    []string `json:"cluster"`
 }
 
 func ReadKeys() (*VaultKeys, error) {
