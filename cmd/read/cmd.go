@@ -23,7 +23,7 @@ func Cmd() *cobra.Command {
 
 func action(cmd *cobra.Command, args []string) error {
 	engine := args[0]
-	k, err := vault.ReadKeys()
+	k, err := vault.ReadKeys("")
 	if err != nil {
 		log.Printf("no configuration file")
 		//return err

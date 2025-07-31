@@ -18,7 +18,7 @@ func Cmd() *cobra.Command {
 }
 
 func action(cmd *cobra.Command, args []string) error {
-	k, err := vault.ReadKeys()
+	k, err := vault.ReadKeys("")
 	if err != nil {
 		return err
 	}

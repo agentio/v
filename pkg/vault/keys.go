@@ -13,13 +13,16 @@ type VaultKeys struct {
 	Cluster    []string `json:"cluster"`
 }
 
-func ReadKeys() (*VaultKeys, error) {
+func ReadKeys(cluster string) (*VaultKeys, error) {
+	if cluster == "" {
+		cluster = "keys"
+	}
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return nil, err
 	}
-	configfilename := filepath.Join(home, ".config", "vault", "keys.json")
-	b, err := os.ReadFile(configfilename)
+	keyfile := filepath.Join(home, ".config", "vault", cluster+".json")
+	b, err := os.ReadFile(keyfile)
 	if err != nil {
 		return nil, err
 	}

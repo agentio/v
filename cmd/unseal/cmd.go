@@ -12,12 +12,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var keyfile string
+
 func Cmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "unseal",
 		Short: "Unseal a local vault",
 		RunE:  action,
 	}
+	cmd.Flags().StringVar(&keyfile, "cluster", "", "cluster name")
 	return cmd
 }
 
@@ -26,11 +29,16 @@ type UnsealRequest struct {
 }
 
 func action(cmd *cobra.Command, args []string) error {
-	k, err := vault.ReadKeys()
+	k, err := vault.ReadKeys(keyfile)
 	if err != nil {
 		return err
 	}
-	unseal := UnsealRequest{Key: k.Keys[0]}
+	unseal := UnsealRequest{}
+	if len(k.Keys) > 0 {
+		unseal.Key = k.Keys[0]
+	} else if len(k.KeysBase64) > 0 {
+		unseal.Key = k.KeysBase64[0]
+	}
 	unsealBytes, err := json.Marshal(unseal)
 	if err != nil {
 		return err
