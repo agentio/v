@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/agentio/v/cmd/env"
+	"github.com/agentio/v/cmd/nomad"
 	"github.com/agentio/v/cmd/read"
 	"github.com/agentio/v/cmd/token"
 	"github.com/agentio/v/cmd/unseal"
@@ -19,5 +20,6 @@ func Cmd() *cobra.Command {
 	cmd.AddCommand(token.Cmd())
 	cmd.AddCommand(unseal.Cmd())
 	cmd.AddCommand(write.Cmd())
+	cmd.AddCommand(nomad.Cmd())
 	return cmd
 }

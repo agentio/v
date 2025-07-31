@@ -3,6 +3,7 @@ package read
 import (
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 	"os"
 
@@ -24,15 +25,21 @@ func action(cmd *cobra.Command, args []string) error {
 	engine := args[0]
 	k, err := vault.ReadKeys()
 	if err != nil {
-		return err
+		log.Printf("no configuration file")
+		//return err
+	}
+	token, err := vault.TokenFromFile()
+	if err != nil {
+		token = k.RootToken
 	}
 	var responseData ListKVStoreMetadataResponse
 	{
-		request, err := http.NewRequest("GET", vault.URL("/v1/"+engine+"/metadata?list=true"), nil)
+		url := vault.URL("/v1/" + engine + "/metadata?list=true")
+		request, err := http.NewRequest("GET", url, nil)
 		if err != nil {
 			return err
 		}
-		request.Header.Set("Authorization", "Bearer "+k.RootToken)
+		request.Header.Set("Authorization", "Bearer "+token)
 		request.Header.Set("Content-Type", "application/json")
 		client := &http.Client{}
 		response, err := client.Do(request)
@@ -54,7 +61,7 @@ func action(cmd *cobra.Command, args []string) error {
 		if err != nil {
 			return err
 		}
-		request.Header.Set("Authorization", "Bearer "+k.RootToken)
+		request.Header.Set("Authorization", "Bearer "+token)
 		request.Header.Set("Content-Type", "application/json")
 		client := &http.Client{}
 		response, err := client.Do(request)
