@@ -17,7 +17,7 @@ var keyfile string
 func Cmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "unseal",
-		Short: "Unseal a local vault",
+		Short: "Unseal a vault",
 		RunE:  action,
 	}
 	cmd.Flags().StringVar(&keyfile, "cluster", "", "cluster name")

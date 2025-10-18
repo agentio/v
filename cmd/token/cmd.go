@@ -8,6 +8,8 @@ import (
 	"golang.design/x/clipboard"
 )
 
+var keyfile string
+
 func Cmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "token",
@@ -15,11 +17,12 @@ func Cmd() *cobra.Command {
 		RunE:  action,
 		Args:  cobra.NoArgs,
 	}
+	cmd.Flags().StringVar(&keyfile, "cluster", "", "cluster name")
 	return cmd
 }
 
 func action(cmd *cobra.Command, args []string) error {
-	k, err := vault.ReadKeys("")
+	k, err := vault.ReadKeys(keyfile)
 	if err != nil {
 		return err
 	}
