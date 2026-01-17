@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/agentio/v/cmd/env"
+	"github.com/agentio/v/cmd/get"
 	"github.com/agentio/v/cmd/nomad"
 	"github.com/agentio/v/cmd/read"
 	"github.com/agentio/v/cmd/token"
@@ -16,6 +17,7 @@ func Cmd() *cobra.Command {
 		Short: "Vault Tools",
 	}
 	cmd.AddCommand(env.Cmd())
+	cmd.AddCommand(get.Cmd())
 	cmd.AddCommand(read.Cmd())
 	cmd.AddCommand(token.Cmd())
 	cmd.AddCommand(unseal.Cmd())
